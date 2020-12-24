@@ -16,6 +16,7 @@ import QtQuick.Layouts 1.3
         height: Screen.height / 3
         property alias text: first_text.text
         rotation: 0
+        property int test: 4
 
         Text {
             id: first_text
@@ -36,15 +37,21 @@ import QtQuick.Layouts 1.3
             hoverEnabled: true
 
             onClicked: {
+                if (test == 0)
+                    DB.setActiveBlock("first");
+                if (test == 1)
+                    DB.setActiveBlock("second");
+                if (test == 2)
+                    DB.setActiveBlock("third");
+                if (test == 3)
+                    DB.setActiveBlock("fourth");
+
                 popup.open();
-                if (first.rotation == 0.1) {
-                    DB.setActiveBlock("hahaah");
-                }
+
             }
 
 
         }
-
 
 
 

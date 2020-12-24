@@ -3,8 +3,9 @@ import QtQuick.Controls 2.0
 import QtQuick.Window 2.0
 
 Popup {
-//    property alias titleText: input_title.text;
-//    property alias inputText: input.text;
+    onActiveFocusChanged: {
+        clear();
+    }
 
     anchors {
         centerIn: parent
@@ -14,7 +15,7 @@ Popup {
     height: width / 5
     modal: true
     focus: true
-    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside;
 
     Rectangle {
         width: 600
@@ -46,7 +47,7 @@ Popup {
                 id: ok
                 anchors.fill: parent
                 onClicked: {
-                    console.log("send")
+                    sendInput(input.text)
                 }
                 cursorShape: Qt.PointingHandCursor
             }
@@ -67,7 +68,6 @@ Popup {
 
                 TextInput {
                     id: input
-//                    text: inputText
                     anchors.fill: parent
                     anchors.leftMargin: 15
                     anchors.rightMargin: 15
@@ -86,12 +86,54 @@ Popup {
                     }
 
                     onAccepted: {
-                        // send
+                        sendInput(input.text)
                     }
+                }
+
+                TextArea {
+                    id: answer
+                    text: "result";
+                    anchors.top: input.bottom
                 }
             }
 
         }
 
+    function sendInput(input) {
+        let whatIsBlock = DB.getActiveBlock()
+        let result;
+        let prefix = "По запросу \""
+        let postfix = "\" найдены такие ответы:\n"
+        switch (whatIsBlock) {
+        case "first":
+            result = DB.first(input);
+            answer.text = result;
+            break;
+        case "second":
+            result = DB.second(input);
+            answer.text = prefix + input + postfix + result;
+            break;
+        case "third":
+            let query = input.split(' ');
+            result = DB.third(query[0], query[1]);
+            answer.text = result;
+            break;
+        case "fourth":
+            result = DB.fourth(input);
+            answer.text = result;
+            break;
+        }
 
     }
+
+    function clear() {
+        answer.text = "";
+        input.text = "";
+    }
+
+
+}
+
+
+
+
